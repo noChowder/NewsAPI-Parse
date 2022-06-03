@@ -31,19 +31,19 @@ public class ParserChoice {
 	 * 
 	 * @param parserVisitor Visitor called.
 	 */
-	public void accept(ParserVisitor parserVisitor) {
+	public void accept(ParserVisitor parser) {
 		if(choice.isEmpty() || !choice.equalsIgnoreCase("COMPLEX") && !choice.equalsIgnoreCase("SIMPLE") && !choice.equalsIgnoreCase("WEB")) {
 			System.out.println("User parser choice: \"" + choice + "\".");
 			System.out.println("Please select a parser from this list: [COMPLEX, SIMPLE, WEB].");
 		}
 		else if(choice.equalsIgnoreCase("COMPLEX")) {
-			parserVisitor.visit(new ComplexParser(file, logger, null));
+			parser.visit(new ComplexParser(file, logger, null));
 		}
 		else if(choice.equalsIgnoreCase("SIMPLE")) {
-			parserVisitor.visit(new SimpleParser(file, logger, null));
+			parser.visit(new SimpleParser(file, logger, null));
 		}
 		else if(choice.equalsIgnoreCase("WEB")) {
-			parserVisitor.visit(new WebParser(url, logger, null));
+			parser.visit(new WebParser(url, logger, null));
 		}
 	}
 }

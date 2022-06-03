@@ -104,11 +104,6 @@ public class WebParser implements Parser{
 	}
 	
 	@Override
-	public void visit(ParserVisitor visitor) {
-		visitor.visit(this);
-	}
-	
-	@Override
 	public boolean equals(Object o) {
 		if(o == null) {
 			return false;
