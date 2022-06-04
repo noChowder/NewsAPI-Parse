@@ -11,8 +11,13 @@ import task_1.ParserConstructVisitor;
 
 public class Driver {
 	
-	 static Logger logger = Logger.getLogger(Driver.class.getName());
+	static Logger logger = Logger.getLogger(Driver.class.getName());
 	
+	/**
+	 * Driver function for demoing functionality.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		File file1 = new File("inputs/newsapi.txt");
 		ParserChoice parserChoice = new ParserChoice("COMPLEX", file1, null, logger, null);

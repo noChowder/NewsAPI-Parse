@@ -17,11 +17,19 @@ public abstract class ParserDecorator implements Parser {
 		return parser.getNews();
 	}
 	
+	/**
+	 * Parses data
+	 * 
+	 */
 	@Override
 	public void parse() {
 		parser.parse();
 	}
 	
+	/**
+	 * Displays parsed data
+	 * 
+	 */
 	@Override
 	public void display() {
 		parser.display();

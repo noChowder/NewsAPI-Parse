@@ -7,18 +7,33 @@ public class FilterParser extends ParserDecorator {
 	private String filter;
 	private News news;
 
+	/**
+	 * Constructor for wrapping ComplexParser.
+	 * 
+	 * @param parser ComplexParser being decorated
+	 * @param filter Source name to grab data
+	 * @param news Internal data to be filtered by display()
+	 */
 	public FilterParser(ComplexParser parser, String filter, News news) {
 		super(parser);
 		this.filter = filter;
 		this.news = news;
 	}
 	
+	/**
+	 * Parses data and updates this.news.
+	 * 
+	 */
 	@Override
 	public void parse() {
 		super.parse();
 		news = super.getNews();
 	}
 	
+	/**
+	 * Displays filtered data.
+	 * 
+	 */
 	@Override
 	public void display() {
 		List<Article> articles = news.getArticles();
