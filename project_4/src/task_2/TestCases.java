@@ -51,62 +51,51 @@ public class TestCases {
 	}
 	
 	@Test
-	void testParserChoice() {
-		ParserChoice complex = new ParserChoice(file1, null, logger);
-		Parser parser = complex.chooseParser("file", "newsapi");
-		Parser expected = new ComplexParser(file1, logger);
-		assertEquals(parser, expected);
-		
-		ParserChoice simple = new ParserChoice(file2, null, logger);
-		parser = simple.chooseParser("file", "simple");
-		expected = new SimpleParser(file2, logger);
-		assertEquals(parser, expected);
-	}
-	
-	@Test
-	void testWebParserChoice() {
-		try {
-			URL url = new URL("https://newsapi.org/v2/top-headlines?country=us&apiKey=3b37320732d540f68e32219efb37ee49");
-			ParserChoice web = new ParserChoice(null, url, logger);
-			Parser parser = web.chooseParser("url", null);
-			Parser expected = new WebParser(url, logger);
-			
-			assertEquals(parser, expected);
-		} catch(IOException e) {
-			logger.log(Level.SEVERE, "Error in TestCases.java. (testWebParserChoice)", e);
-		}
-	}
-	
-	@Test
-	void testSimpleParserVisitor() {
-		ParserChoice simple = new ParserChoice(file2, null, logger);
-		Parser parser = simple.chooseParser("file", "simple");
-		
+	void testFiltering() {
 		setUp();
-		parser.accept(new ParserConstructVisitor());
+		ParserChoice parserChoice = new ParserChoice("COMPLEX", file1, null, logger, "CNN");
+		parserChoice.accept(new ParserConstructVisitor());
 		System.out.flush();
 		tearDown();
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append("Title: Assignment #2");
-		builder.append("\n");
-		builder.append("at: 2021-04-16 09:53:23.709229");
-		builder.append("\n");
-		builder.append("URL: https://canvas.calpoly.edu/courses/55411/assignments/274503");
-		builder.append("\n");
-		builder.append("Extend Assignment #1 to support multiple sources and to introduce source processor.");
+		builder.append("Title: The latest on the coronavirus pandemic and vaccines: Live updates - CNN\n");
+		builder.append("at: 2021-03-24T22:32:00Z\n");
+		builder.append("URL: https://www.cnn.com/world/live-news/coronavirus-pandemic-vaccine-updates-03-24-21/index.html\n");
+		builder.append("The coronavirus pandemic has brought countries to a standstill. Meanwhile, vaccinations have already started in some countries as cases continue to rise. Follow here for the latest.\n");
+		builder.append(System.getProperty("line.separator"));
+		builder.append("Title: People line the streets of Boulder to honor slain police Officer Eric Talley - CNN\n");
+		builder.append("at: 2021-03-24T22:20:12Z\n");
+		builder.append("URL: https://www.cnn.com/2021/03/24/us/officer-talley-procession/index.html\n");
+		builder.append("Boulder, Colorado, continued to mourn fallen Officer Eric Talley on Wednesday.\n");
 		String expected = builder.toString().trim();
 		
 		assertEquals(expected, outputStreamCaptor.toString().trim());
 	}
 	
 	@Test
-	void badSimpleParserVisitor() {
-		ParserChoice simple = new ParserChoice(file1, null, logger);
-		Parser parser = simple.chooseParser("non", "simple");
-		assertEquals(null, parser);
+	void testFiltering2() {
+		setUp();
+		ParserChoice parserChoice = new ParserChoice("COMPLEX", file1, null, logger, null);
+		parserChoice.accept(new ParserConstructVisitor());
+		tearDown();
+		outputStreamCaptor.reset();
+	}
+	
+	@Test
+	void testBadParser() {
+		setUp();
+		ParserChoice parserChoice = new ParserChoice("bad", file1, null, logger, "CNN");
+		parserChoice.accept(new ParserConstructVisitor());
+		System.out.flush();
+		tearDown();
 		
-		Exception exception = assertThrows(NullPointerException.class, () -> simple.chooseParser(null, "simple"));
-		assertEquals(NullPointerException.class, exception.getClass());
+		StringBuilder builder = new StringBuilder();
+		builder.append("User parser choice: \"bad\".");
+		builder.append(System.getProperty("line.separator"));
+		builder.append("Please select a parser from this list: [COMPLEX, SIMPLE, WEB].");
+		String expected = builder.toString().trim();
+		
+		assertEquals(expected, outputStreamCaptor.toString().trim());
 	}
 }
