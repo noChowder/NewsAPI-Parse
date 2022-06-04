@@ -19,4 +19,10 @@ public class ParserConstructVisitor implements ParserVisitor {
 		parser.parse();
 		parser.display();
 	}
+	
+	@Override
+	public void visit(Parser parser) {
+		parser.parse();
+		parser.display();
+	}
 }

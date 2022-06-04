@@ -10,6 +10,7 @@ public class ParserChoice {
 	private File file;
 	private URL url;
 	private Logger logger;
+	private String source;
 	
 	/**
 	 * Select parser to use. Give file or url and logger.
@@ -18,12 +19,14 @@ public class ParserChoice {
 	 * @param file File to parse. Null if using Web parser.
 	 * @param url URL to parse. Null if using Complex or Simple parser.
 	 * @param logger Logger for reporting errors.
+	 * @param source Source name for filtering.
 	 */
-	public ParserChoice(String choice, File file, URL url, Logger logger) {
+	public ParserChoice(String choice, File file, URL url, Logger logger, String source) {
 		this.choice = choice;
 		this.file = file;
 		this.url = url;
 		this.logger = logger;
+		this.source = source;
 	}
 
 	/**
@@ -31,19 +34,25 @@ public class ParserChoice {
 	 * 
 	 * @param parserVisitor Visitor called.
 	 */
-	public void accept(ParserVisitor parser) {
+	public void accept(ParserVisitor parserVisitor) {
 		if(choice.isEmpty() || !choice.equalsIgnoreCase("COMPLEX") && !choice.equalsIgnoreCase("SIMPLE") && !choice.equalsIgnoreCase("WEB")) {
 			System.out.println("User parser choice: \"" + choice + "\".");
 			System.out.println("Please select a parser from this list: [COMPLEX, SIMPLE, WEB].");
 		}
 		else if(choice.equalsIgnoreCase("COMPLEX")) {
-			parser.visit(new ComplexParser(file, logger, null));
+			if(source != null && !source.isEmpty()) {
+				Parser filter = new FilterParser(new ComplexParser(file, logger, null), source, null);
+				parserVisitor.visit(filter);
+			}
+			else {
+				parserVisitor.visit(new ComplexParser(file, logger, null));
+			}
 		}
 		else if(choice.equalsIgnoreCase("SIMPLE")) {
-			parser.visit(new SimpleParser(file, logger, null));
+			parserVisitor.visit(new SimpleParser(file, logger, null));
 		}
 		else if(choice.equalsIgnoreCase("WEB")) {
-			parser.visit(new WebParser(url, logger, null));
+			parserVisitor.visit(new WebParser(url, logger, null));
 		}
 	}
 }
